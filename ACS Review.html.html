@@ -1,0 +1,1487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ACS Review App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+        :root {
+            --bg-primary: #f8fafc; /* light: gray-50 */
+            --text-primary: #1e293b; /* light: slate-800 */
+            --bg-nav: #e2e8f0; /* light: slate-200 */
+            --text-nav: #1e293b; /* light: slate-800 */
+            --bg-section: #ffffff; /* light: white */
+            --border-section-title: #bfdbfe; /* light: blue-200 */
+            --text-section-title: #1e3a8a; /* light: blue-800 */
+            --text-content: #334155; /* light: slate-700 */
+            --marker-color: #60a5fa; /* light: blue-400 */
+            --bg-mcq-question: #f8fafc; /* light: gray-50 */
+             --border-mcq-question: #cbd5e1; /* light: slate-300 */
+            --border-mcq-option: #e2e8f0; /* light: slate-200 */
+            --bg-mcq-option-hover: #f1f5f9; /* light: slate-100 */
+            --bg-mcq-selected: #dbeafe; /* light: blue-100 */
+            --border-mcq-selected: #60a5fa; /* light: blue-400 */
+            --bg-mcq-correct: #dcfce7; /* light: green-100 */
+            --border-mcq-correct: #4ade80; /* light: green-400 */
+            --bg-mcq-incorrect: #fee2e2; /* light: red-100 */
+            --border-mcq-incorrect: #f87171; /* light: red-400 */
+            --bg-explanation: #e0f2f7; /* light: cyan-50 */
+            --border-explanation: #bae6fd; /* light: cyan-200 */
+            --text-explanation: #083344; /* light: cyan-900 */
+            --bg-feedback: #fefce8; /* light: yellow-50 */
+            --border-feedback: #fde68a; /* light: yellow-200 */
+            --text-feedback: #78350f; /* light: yellow-900 */
+             --text-feedback-title: #b45309; /* light: yellow-700 */
+
+            /* Font Size Variables */
+            --base-font-size: 1rem; /* Default */
+        }
+
+        /* Dark Mode Variables */
+        html.dark {
+            --bg-primary: #1e293b; /* dark: slate-800 */
+            --text-primary: #e2e8f0; /* dark: slate-200 */
+            --bg-nav: #334155; /* dark: slate-700 */
+            --text-nav: #f1f5f9; /* dark: slate-100 */
+            --bg-section: #0f172a; /* dark: slate-900 */
+            --border-section-title: #334155; /* dark: slate-700 */
+            --text-section-title: #93c5fd; /* dark: blue-300 */
+            --text-content: #cbd5e1; /* dark: slate-300 */
+            --marker-color: #93c5fd; /* dark: blue-300 */
+            --bg-mcq-question: #1e293b; /* dark: slate-800 */
+             --border-mcq-question: #475569; /* dark: slate-600 */
+            --bg-mcq-option-hover: #475569; /* dark: slate-600 */
+             --border-mcq-option: #334155; /* dark: slate-700 */
+            --bg-mcq-selected: #1e3a8a; /* dark: blue-800 */
+            --border-mcq-selected: #60a5fa; /* dark: blue-400 */
+            --bg-mcq-correct: #14532d; /* dark: green-900 */
+            --border-mcq-correct: #4ade80; /* dark: green-400 */
+            --bg-mcq-incorrect: #7f1d1d; /* dark: red-900 */
+            --border-mcq-incorrect: #f87171; /* dark: red-400 */
+            --bg-explanation: #0e7490; /* dark: cyan-700 */
+            --border-explanation: #22d3ee; /* dark: cyan-400 */
+            --text-explanation: #ecfdf5; /* dark: emerald-50 */
+            --bg-feedback: #713f12; /* dark: amber-900 */
+            --border-feedback: #fcd34d; /* dark: amber-300 */
+            --text-feedback: #fde68a; /* dark: yellow-100 */
+             --text-feedback-title: #fcd34d; /* dark: amber-300 */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-size: var(--base-font-size); /* Use CSS variable */
+             line-height: 1.6; /* Added default line height for readability */
+        }
+
+        /* Apply font size scaling */
+        .text-scale-sm { --base-font-size: 0.9rem; }
+        .text-scale-base { --base-font-size: 1rem; }
+        .text-scale-lg { --base-font-size: 1.1rem; }
+        .text-scale-xl { --base-font-size: 1.25rem; }
+
+
+        /* Navigation Styling */
+        .nav {
+             background-color: var(--bg-nav);
+             color: var(--text-nav);
+             box-shadow: 2px 0 5px rgba(0,0,0,0.1); /* Add subtle shadow to nav */
+        }
+         .nav h2 {
+             color: inherit; /* Use nav text color */
+         }
+
+
+        .nav-link {
+             display: block;
+             padding: 0.75rem 1rem;
+             margin-bottom: 0.5rem;
+             border-radius: 0.375rem;
+             transition: background-color 0.2s, color 0.2s;
+             font-weight: 500;
+        }
+
+        .nav-link:hover {
+             background-color: var(--bg-mcq-option-hover); /* Reusing a variable for consistency */
+        }
+
+        .nav-link.active {
+            background-color: #3b82f6; /* Kept blue for active link */
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Content Section Styling */
+        .content-section {
+            display: none;
+            background-color: var(--bg-section);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            margin-bottom: 1.5rem;
+            color: var(--text-content); /* Apply content text color */
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        /* Main Section Title (h1) */
+         .content-section h1 {
+             color: var(--text-section-title);
+             border-bottom-color: var(--border-section-title);
+         }
+        
+        /* Topic (h3) Styling */
+        .content-section h3 {
+            font-size: 1.125em; /* Use em for relative sizing */
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--text-section-title); /* Use section title color */
+             border-bottom: 1px solid var(--border-section-title);
+            padding-bottom: 0.5rem;
+        }
+
+        /* List Styling */
+        .content-section ul,
+        .content-section ol {
+            margin-bottom: 1rem;
+            padding-left: 1.5em; /* Use em */
+        }
+        
+        .content-section li {
+            margin-bottom: 0.5rem;
+            line-height: 1.6;
+        }
+
+        .content-section ul li::marker {
+             color: var(--marker-color);
+        }
+        
+         .content-section ol li::marker {
+             color: var(--marker-color);
+             font-weight: 500;
+        }
+
+
+        /* MCQ Styling */
+        .mcq-question {
+             border: 1px solid var(--border-mcq-question);
+             padding: 1rem;
+             border-radius: 0.5rem;
+             margin-bottom: 1.5rem;
+             background-color: var(--bg-mcq-question);
+        }
+
+        .mcq-option {
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s;
+            padding: 0.75rem;
+            border: 1px solid var(--border-mcq-option);
+            border-radius: 0.375rem;
+            display: flex; /* Use flex for alignment */
+            align-items: center;
+        }
+         .mcq-option span { /* Style the text within the flex container */
+             flex-grow: 1;
+         }
+        .mcq-option:hover:not(.answered .mcq-option){
+            background-color: var(--bg-mcq-option-hover);
+        }
+
+        .mcq-option.selected {
+            background-color: var(--bg-mcq-selected);
+            border-color: var(--border-mcq-selected);
+        }
+        .mcq-option.correct {
+            background-color: var(--bg-mcq-correct);
+            border-color: var(--border-mcq-correct);
+        }
+        .mcq-option.incorrect {
+            background-color: var(--bg-mcq-incorrect);
+            border-color: var(--border-mcq-incorrect);
+        }
+         /* Style for the hidden radio input */
+        .mcq-option input[type="radio"] {
+            position: absolute;
+            left: -9999px;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+
+        .explanation {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            background-color: var(--bg-explanation);
+            border: 1px solid var(--border-explanation);
+            font-size: 0.875em; /* Use em */
+            color: var(--text-explanation);
+        }
+         .explanation strong {
+             color: inherit; /* Ensure strong tag uses explanation text color */
+         }
+
+        /* Button Styling */
+        .check-button {
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #3b82f6; /* bg-blue-500 */
+            color: white;
+            border-radius: 0.375rem;
+            transition: background-color 0.2s;
+            border: none;
+            cursor: pointer;
+        }
+         .check-button:hover:not(:disabled) {
+            background-color: #2563eb; /* bg-blue-600 */
+        }
+        .check-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        /* Feedback Styling */
+        #mcq-feedback {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            background-color: var(--bg-feedback);
+            border: 1px solid var(--border-feedback);
+            color: var(--text-feedback);
+            font-size: 0.9em; /* Use em */
+        }
+        #mcq-feedback h4 {
+             font-weight: 600;
+             margin-bottom: 0.5rem;
+             color: var(--text-feedback-title);
+        }
+         #mcq-feedback ul {
+            padding-left: 1.25em; /* Use em */
+            margin-bottom: 0;
+        }
+         #mcq-feedback li {
+             margin-bottom: 0.25rem;
+         }
+         #mcq-feedback a {
+             color: var(--text-feedback-title); /* Use feedback title color for links */
+             text-decoration: underline;
+         }
+         #mcq-feedback a:hover {
+             color: inherit; /* Inherit main feedback text color on hover */
+         }
+
+        /* Algorithm Styling */
+        .algorithm-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem; /* Increased gap for better separation */
+            align-items: center;
+             padding-top: 1rem;
+             padding-bottom: 1rem;
+        }
+
+        .algo-node {
+            background-color: var(--bg-mcq-question);
+            border: 1px solid var(--border-mcq-question);
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+             max-width: 350px; /* Explicit max-width in px */
+             width: 95%; /* Allow it to be narrower on small screens */
+             box-sizing: border-box; /* Include padding and border in element's total width and height */
+             cursor: pointer;
+             transition: background-color 0.2s, border-color 0.2s, transform 0.1s ease-in-out; /* Added transition */
+        }
+         /* Subtle press effect */
+         .algo-node:active:not(.algo-end) {
+             transform: scale(0.98);
+             border-color: #3b82f6; /* Highlight on press */
+         }
+
+
+         .algo-node:hover:not(.algo-end) { /* Don't change cursor/hover for end nodes */
+             background-color: var(--bg-mcq-option-hover);
+         }
+         .algo-end {
+             cursor: default; /* No pointer cursor for end nodes */
+         }
+
+
+        .algo-node p {
+            margin: 0;
+            line-height: 1.4;
+            word-wrap: break-word; /* Ensure long words break */
+            overflow-wrap: break-word;
+        }
+
+        .algo-decision {
+            background-color: var(--bg-mcq-selected);
+             border-color: var(--border-mcq-selected);
+             font-weight: 500;
+        }
+
+        .algo-end {
+            background-color: var(--bg-mcq-correct);
+            border-color: var(--border-mcq-correct);
+            font-weight: 500;
+        }
+
+        .algo-hidden {
+            display: none;
+        }
+
+        .algo-options {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 1rem; /* Increased margin top */
+            margin-bottom: 0.5rem; /* Added margin bottom */
+            flex-wrap: wrap;
+        }
+
+        .algo-option-link {
+            background-color: #3b82f6; /* bg-blue-500 */
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            text-decoration: none;
+            transition: background-color 0.2s;
+            font-size: 0.9em;
+             white-space: nowrap; /* Prevent options from breaking within the link */
+        }
+
+        .algo-option-link:hover {
+            background-color: #2563eb; /* bg-blue-600 */
+        }
+         .algo-option-link.reset {
+             background-color: #64748b; /* bg-slate-500 */
+             margin-top: 1rem; /* Add margin above reset button */
+         }
+         .algo-option-link.reset:hover {
+             background-color: #475569; /* bg-slate-600 */
+         }
+
+
+         /* Settings Panel Styling */
+         #settings-panel {
+             margin-top: 1rem;
+             padding: 1rem;
+             background-color: var(--bg-nav);
+             border-radius: 0.5rem;
+             display: flex;
+             flex-direction: column; /* Stack settings vertically on small screens */
+             gap: 1rem;
+             align-items: flex-start; /* Align items to the start */
+             font-size: 0.9em;
+             color: var(--text-nav);
+         }
+          @media (min-width: 768px) { /* md breakpoint */
+              #settings-panel {
+                  flex-direction: row; /* Row layout on larger screens */
+                  align-items: center;
+                  justify-content: space-between; /* Space out groups */
+              }
+              #settings-panel div {
+                   flex-shrink: 0; /* Prevent items from shrinking */
+              }
+          }
+
+
+         #settings-panel div {
+             display: flex;
+             align-items: center;
+             gap: 0.5rem;
+         }
+
+        #settings-panel button {
+            padding: 0.25rem 0.75rem;
+            background-color: #94a3b8; /* bg-slate-400 */
+            color: white;
+            border-radius: 0.25rem;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: inherit;
+        }
+         #settings-panel button:hover {
+             background-color: #64748b; /* bg-slate-500 */
+         }
+         /* Highlight active font size button */
+         #settings-panel button.active {
+             background-color: #3b82f6; /* bg-blue-500 */
+         }
+
+         /* Theme Toggle Styling */
+         .theme-toggle {
+             background-color: #94a3b8; /* bg-slate-400 */
+             color: white;
+             border: none;
+             border-radius: 0.25rem;
+             padding: 0.25rem 0.5rem;
+             cursor: pointer;
+             font-size: 1.1em;
+             transition: background-color 0.2s;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+         }
+         .theme-toggle:hover {
+             background-color: #64748b; /* bg-slate-500 */
+         }
+
+    </style>
+</head>
+<body class="bg-gray-50 text-slate-800 text-scale-base"> <div class="flex flex-col md:flex-row min-h-screen">
+        <nav class="nav w-full md:w-64 p-4">
+            <h2 class="text-xl font-bold mb-6">ACS Review Sections</h2>
+            <ul>
+                <li><a href="#basics" class="nav-link active">Basics</a></li>
+                <li><a href="#evaluation" class="nav-link">Evaluation & Diagnosis</a></li>
+                <li><a href="#ecg" class="nav-link">ECG Interpretation</a></li>
+                <li><a href="#algorithms" class="nav-link">Management Algorithms</a></li>
+                <li><a href="#medications" class="nav-link">Key Medications</a></li>
+                <li><a href="#pitfalls" class="nav-link">Pitfalls & Pearls</a></li>
+                <li><a href="#complications" class="nav-link">Complications</a></li>
+                <li><a href="#mcq" class="nav-link">Knowledge Check (MCQs)</a></li>
+            </ul>
+            <div id="settings-panel">
+                 <div>
+                    <span>Font Size:</span>
+                    <button data-font-scale="sm">A-</button>
+                    <button data-font-scale="base" class="active">A</button>
+                    <button data-font-scale="lg">A+</button>
+                    <button data-font-scale="xl">A++</button>
+                 </div>
+                 <div>
+                     <span>Theme:</span>
+                     <button id="theme-toggle" class="theme-toggle" title="Toggle light/dark theme">
+                         ☀️ </button>
+                 </div>
+            </div>
+            <div class="mt-8 text-xs text-slate-600">
+                <p>Current Date: April 19, 2025</p>
+                <p>Location: Zarqa, Jordan</p>
+                <p class="mt-2 italic">Disclaimer: Educational use only. Refer to current guidelines.</p>
+            </div>
+        </nav>
+
+        <main class="flex-1 p-6 md:p-10 overflow-y-auto">
+
+            <section id="basics" class="content-section active">
+                <h1 class="text-2xl font-bold mb-4 border-b pb-2">Section 1: ACS Basics - The Foundation</h1>
+                <div class="prose max-w-none">
+                    <p>Understanding the fundamental concepts of Acute Coronary Syndrome is crucial for effective management. ACS represents a critical imbalance of myocardial oxygen supply and demand.</p>
+                    <ol>
+                        <li>
+                            <h3>Definition</h3>
+                            <p>ACS is a spectrum of clinical syndromes caused by acute myocardial ischemia, typically due to rupture or erosion of an unstable atherosclerotic plaque leading to thrombus formation and coronary artery occlusion.</p>
+                        </li>
+                        <li>
+                            <h3>The Spectrum</h3>
+                            <ul>
+                                <li><strong>Unstable Angina (UA):</strong> Myocardial ischemia <em>without</em> necrosis (negative troponins). Presents as new-onset severe angina, accelerating angina (more frequent, severe, or prolonged), or angina at rest. ECG may show ST depression, T-wave inversion, or be normal.</li>
+                                <li><strong>Non-ST-Elevation Myocardial Infarction (NSTEMI):</strong> Myocardial ischemia <em>with</em> necrosis (positive troponins). Similar presentation to UA, but evidence of myocyte death exists. ECG typically shows ST depression, T-wave inversion, or may be non-specific. No ST elevation.</li>
+                                <li><strong>ST-Elevation Myocardial Infarction (STEMI):</strong> Complete or near-complete coronary artery occlusion causing transmural myocardial ischemia and necrosis (positive troponins). Defined by characteristic ST-segment elevation on ECG in contiguous leads or new Left Bundle Branch Block (LBBB) with concerning clinical picture. Requires emergent reperfusion.</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h3>Pathophysiology Simplified</h3>
+                            <p>Atherosclerotic Plaque &rarr; Plaque Rupture/Erosion &rarr; Platelet Adhesion/Aggregation & Coagulation Cascade Activation &rarr; Thrombus Formation &rarr; Reduced Coronary Blood Flow &rarr; Ischemia +/- Infarction.</p>
+                        </li>
+                    </ol>
+                </div>
+            </section>
+
+            <section id="evaluation" class="content-section">
+                <h1 class="text-2xl font-bold mb-4 border-b pb-2">Section 2: Initial Evaluation & Diagnosis</h1>
+                 <div class="prose max-w-none">
+                    <p>Prompt and accurate initial assessment is key to timely management.</p>
+                    <ol>
+                        <li>
+                            <h3>Clinical Presentation</h3>
+                            <ul>
+                                <li><strong>Typical:</strong> Retrosternal chest pain/pressure ("crushing," "heavy"), radiating to left arm/jaw/neck/back, lasting &gt; 10-20 mins, associated with diaphoresis, nausea/vomiting, shortness of breath, anxiety.</li>
+                                <li><strong>Atypical:</strong> Common in women, elderly, diabetics. May present as epigastric pain, indigestion, isolated dyspnea, fatigue, syncope, altered mental status. Maintain high index of suspicion!</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h3>Key Immediate Actions (&lt; 10 minutes of arrival)</h3>
+                            <ul>
+                                <li><strong>Focused H&P:</strong> Assess symptoms, timing, risk factors, contraindications to therapies.</li>
+                                <li><strong>Vital Signs & O2 Sat:</strong> Supplemental O2 <em>only if</em> O2 sat &lt; 90%, respiratory distress, or high-risk hypoxemia features.</li>
+                                <li><strong>12-Lead ECG:</strong> <strong>CRITICAL.</strong> Obtain and interpret within 10 minutes. Repeat serially (e.g., q15-30 min initially) or with change in symptoms.</li>
+                                <li><strong>Cardiac Biomarkers:</strong> Troponin I or T. Get baseline, repeat at 1-3 hours and 3-6 hours (per institutional protocol/assay generation). Remember troponins can be initially negative even in MI.</li>
+                                <li><strong>Basic Labs:</strong> CBC, BMP, Coagulation panel (PT/INR, PTT), Lipid panel.</li>
+                                <li><strong>Portable Chest X-ray:</strong> Usually within 30 mins. Assess for alternative diagnoses (e.g., dissection, pneumothorax) or complications (e.g., heart failure).</li>
+                                <li><strong>Establish IV Access.</strong></li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+            </section>
+
+            <section id="ecg" class="content-section">
+                <h1 class="text-2xl font-bold mb-4 border-b pb-2">Section 3: High-Yield ECG Interpretation in ACS</h1>
+                 <div class="prose max-w-none">
+                    <p><em>(Remember: Compare to old ECGs whenever possible!)</em> ECG is the cornerstone of rapid ACS diagnosis.</p>
+                    <ol>
+                        <li>
+                            <h3>STEMI</h3>
+                            <ul>
+                                <li><strong>Definition:</strong> New ST elevation at the J-point in &ge;2 contiguous leads:
+                                    <ul>
+                                        <li>&ge;1 mm (0.1 mV) in all leads EXCEPT V2-V3.</li>
+                                        <li>Leads V2-V3: &ge;2 mm in men &ge;40 yrs; &ge;2.5 mm in men &lt;40 yrs; &ge;1.5 mm in women.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Localization & Reciprocal Changes:</strong>
+                                    <ul>
+                                        <li><strong>Anterior (LAD):</strong> ST &uarr; in V1-V4 (Septal V1-V2; Anterior V3-V4). Reciprocal ST &darr; in Inferior leads (II, III, aVF).</li>
+                                        <li><strong>Inferior (RCA or LCx):</strong> ST &uarr; in II, III, aVF. Reciprocal ST &darr; in aVL, I, possibly V1-V3. <em>Always get Right-sided leads (V4R) if inferior STEMI suspected (check for RV infarct).</em></li>
+                                        <li><strong>Lateral (LCx or Diagonal of LAD):</strong> ST &uarr; in I, aVL, V5-V6. Reciprocal ST &darr; in Inferior leads.</li>
+                                        <li><strong>Posterior (LCx or RCA):</strong> Often subtle. Look for ST &darr; &gt;1mm &amp; tall R waves in V1-V3 (mirror image of anterior STEMI leads). Confirm with posterior leads (V7-V9) showing ST &uarr; &ge;0.5 mm.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>New LBBB:</strong> In the context of concerning symptoms, treat as STEMI equivalent. Use <strong>Sgarbossa Criteria</strong> (and modified versions) to identify MI in presence of LBBB.
+                                    <ul>
+                                        <li>Concordant ST elevation &ge;1 mm in any lead (+5 points).</li>
+                                        <li>Concordant ST depression &ge;1 mm in V1-V3 (+3 points).</li>
+                                        <li>Discordant ST elevation &ge;5 mm (now often modified to ST elevation &ge;25% of preceding S-wave depth) (+2 points). Score &ge;3 is specific for MI.</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h3>NSTEMI / UA</h3>
+                            <ul>
+                                <li><strong>ST Depression:</strong> &ge;0.5 mm horizontal or downsloping ST depression in &ge;2 contiguous leads.</li>
+                                <li><strong>T-Wave Inversion (TWI):</strong> &ge;1 mm deep TWI in &ge;2 contiguous leads with prominent R wave or R/S ratio &gt;1. Dynamic TWI are more concerning.</li>
+                                <li><strong>Transient ST Elevation:</strong> ST elevation &ge;0.5mm for &lt;20 minutes.</li>
+                                <li><em>Note:</em> A normal ECG does NOT rule out ACS.</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h3>High-Risk Patterns (Often treated like STEMI or need urgent cath)</h3>
+                            <ul>
+                                <li><strong>Wellens' Syndrome:</strong> Deeply inverted or biphasic T waves in V2-V3 during a pain-free period. Indicates critical proximal LAD stenosis. High risk for imminent large anterior MI.</li>
+                                <li><strong>De Winter's T Waves:</strong> Upsloping ST depression at the J-point with tall, peaked, symmetric T waves in precordial leads (V1-V6). STEMI equivalent (LAD occlusion).</li>
+                            </ul>
+                        </li>
+                         <li>
+                            <h3>STEMI Mimics (Important Differentials on ECG)</h3>
+                            <ul>
+                                <li><strong>Pericarditis:</strong> Diffuse concave ST elevation (often all leads except aVR, V1), PR depression (often inverse PR elevation in aVR). No reciprocal ST depression (except aVR/V1).</li>
+                                <li><strong>Benign Early Repolarization (BER):</strong> Common in young, healthy individuals. Diffuse ST elevation, often with J-point notching ("fish-hook"). ST/T wave ratio in V6 usually &lt;0.25. Stable pattern over time.</li>
+                                <li><strong>Left Ventricular Hypertrophy (LVH):</strong> Strain pattern (ST depression and TWI) in lateral leads (I, aVL, V5-V6). Can have ST elevation in V1-V3. Use voltage criteria (e.g., Sokolow-Lyon).</li>
+                                <li><strong>Hyperkalemia:</strong> Peaked T waves, widened QRS, diminished P waves, sine wave pattern.</li>
+                                <li><strong>Brugada Syndrome:</strong> Pseudo-RBBB pattern with ST elevation in V1-V2 (Type 1: Coved ST elevation &gt;2mm; Type 2/3: Saddleback ST elevation). Genetic channelopathy.</li>
+                                <li><strong>Pulmonary Embolism:</strong> S1Q3T3 pattern (S wave in I, Q wave in III, TWI in III), TWI V1-V4, RBBB (often transient), sinus tachycardia.</li>
+                            </ul>
+                        </li>
+                    </ol>
+                </div>
+            </section>
+
+            <section id="algorithms" class="content-section">
+                <h1 class="text-2xl font-bold mb-4 border-b pb-2">Section 4: Management Algorithms</h1>
+                 <div class="prose max-w-none">
+                    <p>Explore the key management pathways for ACS. Click the nodes to follow the algorithm steps.</p>
+
+                    <h2>STEMI Management Pathway</h2>
+                     <div id="stem-algorithm" class="algorithm-container">
+                         </div>
+                     <button class="algo-option-link reset hidden" data-algorithm="stem">Reset STEMI Algorithm</button>
+
+                    <h2 class="mt-8">NSTEMI / UA Management Pathway</h2>
+                    <div id="nstem-algorithm" class="algorithm-container">
+                         </div>
+                    <button class="algo-option-link reset hidden" data-algorithm="nstem">Reset NSTEMI/UA Algorithm</button>
+
+                </div>
+            </section>
+
+            <section id="medications" class="content-section">
+                <h1 class="text-2xl font-bold mb-4 border-b pb-2">Section 5: Key Medications Deep Dive</h1>
+                 <div class="prose max-w-none">
+                    <p>A summary of the critical pharmacological agents used in ACS.</p>
+                    <ul>
+                        <li>
+                            <h3>Aspirin (ASA)</h3>
+                            <p>Irreversible COX-1 inhibitor &rarr; prevents Thromboxane A2 formation &rarr; reduces platelet aggregation. Load 162-325mg, maintenance 81mg daily indefinitely.</p>
+                        </li>
+                        <li>
+                            <h3>P2Y12 Inhibitors</h3>
+                            <p>Block ADP receptor P2Y12 on platelets &rarr; inhibit activation/aggregation.</p>
+                            <ul>
+                                <li><em>Clopidogrel:</em> Prodrug. Load 300-600mg, maintenance 75mg daily. Slower onset, genetic variability in response.</li>
+                                <li><em>Ticagrelor:</em> Reversible binding. Load 180mg, maintenance 90mg BID x 1yr, then consider 60mg BID. Faster onset, more potent than clopidogrel. Side effects: dyspnea, bradycardia.</li>
+                                <li><em>Prasugrel:</em> Prodrug. Load 60mg, maintenance 10mg daily (5mg if &lt;60kg or &gt;75yrs). Most potent. Highest bleeding risk. C/I: Prior stroke/TIA. Use only if PCI planned.</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h3>Anticoagulants</h3>
+                            <p>Prevent fibrin formation, stabilize thrombus.</p>
+                            <ul>
+                                <li><em>Unfractionated Heparin (UFH):</em> Binds Antithrombin III &rarr; inactivates Thrombin (IIa) &amp; Factor Xa. IV infusion, requires PTT monitoring. Short half-life, reversible with Protamine.</li>
+                                <li><em>Low Molecular Weight Heparin (LMWH - Enoxaparin):</em> Primarily inhibits Factor Xa. SC injection, weight-based dosing, renal dose adjustment needed. Longer half-life, less monitoring needed. Partially reversible.</li>
+                                <li><em>Bivalirudin:</em> Direct Thrombin Inhibitor. IV. Short half-life. Used primarily during PCI, less HIT risk.</li>
+                                <li><em>Fondaparinux:</em> Selective Factor Xa inhibitor. SC daily. Renal dose adjustment/contraindicated in severe CKD. Lowest HIT risk. Avoid as sole agent in primary PCI.</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h3>Beta-Blockers (e.g., Metoprolol, Atenolol, Carvedilol)</h3>
+                            <p>Reduce heart rate, contractility, BP &rarr; decrease myocardial oxygen demand. Improve long-term survival post-MI. Start low, go slow. C/I: Bradycardia, hypotension, decompensated HF, heart block (2nd/3rd degree), active asthma. *AVOID in cocaine-induced ACS.*</p>
+                        </li>
+                        <li>
+                            <h3>Nitrates (Nitroglycerin)</h3>
+                            <p>Vasodilation (venous &gt; arterial) &rarr; reduce preload/afterload &rarr; decrease myocardial oxygen demand. Coronary vasodilation &rarr; improve oxygen supply. Symptom relief. C/I: SBP &lt;90, RV infarct, PDE5 inhibitor use (within 24-48h).</p>
+                        </li>
+                        <li>
+                            <h3>Statins (High-Intensity: Atorvastatin 80mg, Rosuvastatin 40mg)</h3>
+                            <p>Reduce LDL, pleiotropic effects (anti-inflammatory, plaque stabilization). Start early.</p>
+                        </li>
+                        <li>
+                            <h3>ACE Inhibitors / ARBs (e.g., Lisinopril, Ramipril / Losartan, Valsartan)</h3>
+                            <p>Start within 24h (if stable) especially if anterior MI, HF (LVEF &le;40%), or diabetes. Prevent adverse ventricular remodeling. C/I: Hypotension, severe CKD/hyperkalemia, bilateral renal artery stenosis, angioedema.</p>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="pitfalls" class="content-section">
+                <h1 class="text-2xl font-bold mb-4 border-b pb-2">Section 6: Common Pitfalls & Pearls</h1>
+                <div class="prose max-w-none">
+                    <p>Be aware of common diagnostic and management challenges.</p>
+                    <ul>
+                        <li>
+                            <h3>Missed Posterior MI</h3>
+                            <p>Look for ST depression V1-V3, get posterior leads (V7-V9).</p>
+                        </li>
+                        <li>
+                            <h3>Missed RV Infarct</h3>
+                            <p>Suspect with inferior STEMI. Look for ST elevation in V1 and especially V4R. Avoid nitrates/morphine due to preload dependency. Give fluids.</p>
+                        </li>
+                        <li>
+                            <h3>Atypical Presentations</h3>
+                            <p>Don't dismiss epigastric pain, dyspnea, fatigue, syncope, especially in elderly, women, diabetics. Have a low threshold for ECG/troponins.</p>
+                        </li>
+                        <li>
+                            <h3>Troponin Timing</h3>
+                            <p>Initial troponin can be negative. Need serial measurements. High-sensitivity troponins rise/fall faster.</p>
+                        </li>
+                        <li>
+                            <h3>ECG Interpretation Nuances</h3>
+                            <p>Compare to old ECGs! Don't anchor on one finding. Consider mimics. Dynamic changes are key.</p>
+                        </li>
+                        <li>
+                            <h3>Cocaine-induced Chest Pain</h3>
+                            <p>Can cause vasospasm mimicking ACS. Treat with Benzodiazepines, ASA, Nitrates. <strong>AVOID Beta-Blockers</strong> due to risk of unopposed alpha-stimulation worsening vasospasm/hypertension. Calcium channel blockers may be used.</p>
+                        </li>
+                        <li>
+                            <h3>Contraindications</h3>
+                            <p>Always double-check contraindications before giving NTG (RVI, PDE5i), Beta-blockers (HF, bradycardia, cocaine), Fibrinolysis (bleeding risk, recent surgery/stroke), Prasugrel (stroke/TIA).</p>
+                        </li>
+                        <li>
+                            <h3>Dual Antiplatelet Therapy (DAPT)</h3>
+                            <p>Crucial post-ACS/PCI. Duration depends on stent type, bleeding risk (typically 6-12 months, sometimes longer or shorter).</p>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+             <section id="complications" class="content-section">
+                <h1 class="text-2xl font-bold mb-4 border-b pb-2">Section 7: Complications of MI</h1>
+                <div class="prose max-w-none">
+                    <p>Potential issues that can arise following myocardial infarction.</p>
+                    <ul>
+                        <li>
+                            <h3>Arrhythmias</h3>
+                            <p>VF/VT (early, risk decreases after 24-48h), AF, Bradycardia/Heart Block (esp. inferior MI).</p>
+                        </li>
+                        <li>
+                            <h3>Cardiogenic Shock</h3>
+                            <p>Severe LV dysfunction. High mortality.</p>
+                        </li>
+                        <li>
+                            <h3>Acute Heart Failure / Pulmonary Edema</h3>
+                             <p>Due to LV systolic/diastolic dysfunction.</p>
+                        </li>
+                        <li>
+                            <h3>Mechanical Complications (Usually 3-7 days post-MI)</h3>
+                            <ul>
+                                <li><em>Ventricular Septal Rupture:</em> New harsh holosystolic murmur + shock.</li>
+                                <li><em>Papillary Muscle Rupture:</em> Acute severe Mitral Regurgitation (new murmur, pulmonary edema).</li>
+                                <li><em>Free Wall Rupture:</em> Catastrophic. Tamponade, PEA, sudden death.</li>
+                            </ul>
+                        </li>
+                        <li>
+                            <h3>Recurrent Ischemia / Re-infarction</h3>
+                        </li>
+                        <li>
+                            <h3>Left Ventricular Aneurysm / Thrombus</h3>
+                            <p>Late complication, risk of stroke.</p>
+                        </li>
+                        <li>
+                            <h3>Pericarditis</h3>
+                            <ul>
+                                <li><em>Early (Peri-infarction pericarditis):</em> Within days. Usually transient friction rub +/- pain. Treat with high-dose ASA (Colchicine optional). Avoid NSAIDs/steroids.</li>
+                                <li><em>Dressler's Syndrome:</em> Weeks to months later. Autoimmune. Fever, pleuritic pain, rub, effusion. Treat with ASA/NSAIDs/Colchicine/Steroids.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="mcq" class="content-section">
+                <h1 class="text-2xl font-bold mb-4 border-b pb-2">Section 8: Knowledge Check - MCQs</h1>
+                <div class="text-slate-700">
+                    <p class="mb-6">Test your knowledge on key ACS concepts. Review the explanations for incorrect answers to reinforce learning.</p>
+                    <div id="mcq-container" class="space-y-6">
+                        </div>
+                    <div id="mcq-results" class="mt-8 text-lg font-semibold text-slate-900"></div>
+                     <div id="mcq-feedback" class="mt-6 hidden">
+                         <h4>Areas to Review:</h4>
+                         <ul id="feedback-topics-list">
+                             </ul>
+                     </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script>
+        // --- Utility Functions ---
+        function $(selector) {
+            return document.querySelector(selector);
+        }
+        function $$(selector) {
+            return document.querySelectorAll(selector);
+        }
+
+        // --- Theme Toggle Logic ---
+        const themeToggleBtn = $('#theme-toggle');
+        const htmlElement = $('html');
+        const themeKey = 'theme';
+
+        function setTheme(theme) {
+            if (theme === 'dark') {
+                htmlElement.classList.add('dark');
+                themeToggleBtn.innerHTML = '🌙'; // Moon icon for dark mode
+                localStorage.setItem(themeKey, 'dark');
+            } else {
+                htmlElement.classList.remove('dark');
+                 themeToggleBtn.innerHTML = '☀️'; // Sun icon for light mode
+                localStorage.setItem(themeKey, 'light');
+            }
+        }
+
+        // Check local storage for saved theme preference on load
+        const savedTheme = localStorage.getItem(themeKey);
+        if (savedTheme) {
+            setTheme(savedTheme);
+        } else {
+            // Default to light or follow system preference
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+             setTheme(systemPrefersDark ? 'dark' : 'light');
+        }
+
+        themeToggleBtn.addEventListener('click', () => {
+            const currentTheme = htmlElement.classList.contains('dark') ? 'dark' : 'light';
+            setTheme(currentTheme === 'light' ? 'dark' : 'light');
+        });
+
+
+         // --- Font Size Logic ---
+         const fontSizeButtons = $$('#settings-panel button[data-font-scale]');
+         const bodyElement = $('body');
+         const fontSizeKey = 'fontSize';
+
+         function setFontSize(scale) {
+             // Remove existing scale classes
+             bodyElement.classList.remove('text-scale-sm', 'text-scale-base', 'text-scale-lg', 'text-scale-xl');
+             // Add the selected scale class
+             bodyElement.classList.add(`text-scale-${scale}`);
+
+             // Update active button state
+             fontSizeButtons.forEach(button => {
+                 if (button.dataset.fontScale === scale) {
+                     button.classList.add('active');
+                 } else {
+                     button.classList.remove('active');
+                 }
+             });
+
+             // Save preference
+             localStorage.setItem(fontSizeKey, scale);
+         }
+
+         // Check local storage for saved font size preference on load
+         const savedFontSize = localStorage.getItem(fontSizeKey);
+         setFontSize(savedFontSize || 'base'); // Default to 'base'
+
+         fontSizeButtons.forEach(button => {
+             button.addEventListener('click', () => {
+                 setFontSize(button.dataset.fontScale);
+             });
+         });
+
+
+        // --- Navigation Logic ---
+        const navLinks = $$('.nav-link');
+        const contentSections = $$('.content-section');
+
+        function showSection(targetId) {
+            contentSections.forEach(section => {
+                if (section.id === targetId) {
+                    section.classList.add('active');
+                } else {
+                    section.classList.remove('active');
+                }
+            });
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === `#${targetId}`) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+             // Update URL hash without jumping
+            if(history.pushState) {
+                history.pushState(null, null, `#${targetId}`);
+            } else {
+                location.hash = `#${targetId}`;
+            }
+             // Scroll to top of main content on navigation
+            $('main').scrollTop = 0;
+
+             // Handle Algorithm Rendering when Algorithm Section is shown
+             if (targetId === 'algorithms') {
+                 renderAlgorithm('stem');
+                 renderAlgorithm('nstem');
+             }
+             // Handle MCQ Rendering when MCQ Section is shown
+             if (targetId === 'mcq' && mcqContainer.children.length === 0) {
+                 renderMCQs(); // Render MCQs only if section is active and not already rendered
+             }
+
+        }
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                showSection(targetId);
+            });
+        });
+
+        // Show the initial section based on URL hash or default to 'basics'
+        const initialHash = window.location.hash.substring(1);
+        const validInitialHash = Array.from(contentSections).some(section => section.id === initialHash);
+        showSection(validInitialHash ? initialHash : 'basics');
+
+
+        // --- MCQ Logic ---
+        const mcqContainer = $('#mcq-container');
+        const mcqResults = $('#mcq-results');
+        const mcqFeedback = $('#mcq-feedback');
+        const feedbackTopicsList = $('#feedback-topics-list');
+
+        let score = 0;
+        let questionsAnswered = 0;
+        const incorrectTopics = new Set(); // Use a Set to store unique incorrect topics
+
+        const mcqData = [
+            {
+                question: "1. A 68-year-old male with hypertension and diabetes presents with 2 hours of crushing substernal chest pain radiating to his left arm, diaphoresis, and nausea. His initial ECG shows 3mm ST elevation in leads II, III, and aVF, with 1mm ST depression in leads I and aVL. Troponin is pending. What is the MOST appropriate next step in management?",
+                options: [
+                    "A. Administer sublingual nitroglycerin and obtain serial ECGs.",
+                    "B. Administer IV Metoprolol immediately.",
+                    "C. Activate the cardiac catheterization lab for primary PCI.",
+                    "D. Administer fibrinolytic therapy immediately."
+                ],
+                correctAnswerIndex: 2, // Index C
+                explanation: "The patient presents with classic symptoms and ECG findings of an acute inferior STEMI (ST elevation in II, III, aVF with reciprocal changes in I, aVL). The standard of care for STEMI is emergent reperfusion. Primary PCI is the preferred strategy if it can be performed within guideline-recommended timeframes (Door-to-Device ≤90 min). While NTG (A) might be given (cautiously in inferior MI), it's not the definitive next step. IV Beta-blockers (B) are generally given later once stable and contraindications ruled out, especially in inferior MI where bradycardia/heart block risk is higher. Fibrinolysis (D) is an option only if PCI is unavailable/delayed.",
+                topic: "Management Algorithms"
+            },
+            {
+                question: "2. A 72-year-old female presents with 3 days of intermittent epigastric discomfort and shortness of breath, worse today. ECG shows 1mm ST depression in V4-V6 and T-wave inversions in leads III and aVF. Initial Troponin I is elevated at 1.5 ng/mL (ULN <0.04). BP 130/80, HR 88. Besides ASA, Anticoagulation, and Statin, which management strategy is indicated?",
+                options: [
+                    "A. Immediate fibrinolysis.",
+                    "B. Urgent primary PCI within 90 minutes.",
+                    "C. Ischemia-guided (conservative) strategy with medical management initially.",
+                    "D. Early invasive strategy (angiography within 24-72 hours)."
+                ],
+                correctAnswerIndex: 3, // Index D
+                explanation: "The patient presents with NSTEMI (symptoms + ST depression + elevated troponin). Risk stratification is needed. Features suggesting higher risk include ongoing symptoms, ST depression, and elevated troponins. An early invasive strategy (angiography +/- PCI) is generally indicated for NSTEMI patients with intermediate-to-high risk features to identify and potentially treat the culprit lesion. Immediate fibrinolysis (A) is contraindicated in NSTEMI. Urgent primary PCI (B) is reserved for STEMI. A conservative strategy (C) is typically reserved for low-risk NSTEMI/UA patients.",
+                topic: "Management Algorithms"
+            },
+            {
+                question: "3. Which of the following ECG findings is MOST suggestive of a posterior STEMI?",
+                options: [
+                    "A. Diffuse ST elevation with PR depression.",
+                    "B. ST elevation in leads V1-V4.",
+                    "C. ST depression >1mm in leads V1-V3 with tall R waves.",
+                    "D. Deeply inverted T waves in V2-V3 during a pain-free interval."
+                ],
+                correctAnswerIndex: 2, // Index C
+                explanation: "Posterior MI often doesn't show direct ST elevation on a standard 12-lead ECG. The characteristic finding is reciprocal changes in the anterior leads (V1-V3): ST depression and tall, prominent R waves (as these leads are electrically opposite the posterior wall). Confirmation requires posterior leads (V7-V9) showing ST elevation. (A) suggests pericarditis. (B) suggests anterior STEMI. (D) suggests Wellens' Syndrome (critical LAD stenosis).",
+                topic: "ECG Interpretation"
+            },
+            {
+                question: "4. A 55-year-old male presents with chest pain after using cocaine. His ECG shows 1mm ST elevation in V2-V3. BP is 170/100, HR 110. Which medication should be AVOIDED in the initial management?",
+                options: [
+                    "A. Aspirin",
+                    "B. Nitroglycerin",
+                    "C. Lorazepam",
+                    "D. Metoprolol"
+                ],
+                correctAnswerIndex: 3, // Index D
+                explanation: "In cocaine-induced chest pain/MI, beta-blockers are traditionally avoided initially due to the theoretical risk of unopposed alpha-adrenergic stimulation, which could worsen coronary vasoconstriction and hypertension. The primary treatment involves benzodiazepines (like Lorazepam, C) to reduce sympathetic drive and anxiety, Aspirin (A), and Nitrates (B) or Calcium Channel Blockers for vasospasm. While some newer data questions the absolute contraindication, it remains a standard precaution, especially acutely.",
+                topic: "Key Medications / Pitfalls & Pearls"
+            },
+             {
+                question: "5. A 60-year-old female undergoes successful PCI with a drug-eluting stent (DES) for an anterior STEMI. She has no history of stroke or high bleeding risk. What is the standard recommended duration for Dual Antiplatelet Therapy (DAPT) with Aspirin and Ticagrelor?",
+                options: [
+                    "A. 1 month",
+                    "B. 3 months",
+                    "C. 6 months",
+                    "D. 12 months"
+                ],
+                correctAnswerIndex: 3, // Index D
+                explanation: "Following PCI with DES placement for ACS, the standard recommended duration of DAPT (Aspirin + a P2Y12 inhibitor like Ticagrelor or Clopidogrel) is typically 12 months to prevent stent thrombosis and recurrent ischemic events, unless there is a high bleeding risk or other specific contraindications. Shorter durations (A, B, C) may be considered in patients with very high bleeding risk, but 12 months is the standard default for most ACS patients receiving a DES.",
+                topic: "Key Medications"
+            }
+        ];
+
+        // Function to render MCQs
+        function renderMCQs() {
+            // Only render if the container is empty (prevents re-rendering if just changing theme/font size)
+            if (mcqContainer.children.length > 0) {
+                return;
+            }
+
+            score = 0; // Reset score and topics when first rendering MCQs
+            questionsAnswered = 0;
+            incorrectTopics.clear();
+            updateScoreDisplay();
+            updateFeedbackDisplay();
+
+
+            mcqData.forEach((q, index) => {
+                const questionElement = document.createElement('div');
+                questionElement.classList.add('mcq-question');
+                questionElement.dataset.questionIndex = index; // Store index
+
+                const questionText = document.createElement('p');
+                questionText.classList.add('font-semibold', 'mb-3');
+                questionText.textContent = q.question;
+                questionElement.appendChild(questionText);
+
+                const optionsList = document.createElement('div');
+                optionsList.classList.add('space-y-2');
+                q.options.forEach((option, optionIndex) => {
+                    const optionLabel = document.createElement('label');
+                    optionLabel.classList.add('mcq-option', 'flex', 'items-center');
+                    optionLabel.dataset.optionIndex = optionIndex;
+
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = `question-${index}`;
+                    input.value = optionIndex;
+                    optionLabel.appendChild(input);
+
+                     const optionTextSpan = document.createElement('span');
+                     optionTextSpan.textContent = option;
+                     optionLabel.appendChild(optionTextSpan);
+
+                    optionsList.appendChild(optionLabel);
+
+                    optionLabel.addEventListener('click', () => handleOptionSelect(questionElement, optionLabel));
+                });
+
+                questionElement.appendChild(optionsList);
+
+                const explanationContainer = document.createElement('div');
+                explanationContainer.classList.add('explanation', 'hidden');
+                explanationContainer.innerHTML = `<strong>Explanation:</strong> ${q.explanation}`;
+                questionElement.appendChild(explanationContainer);
+
+                const checkButton = document.createElement('button');
+                checkButton.textContent = 'Check Answer';
+                checkButton.classList.add('check-button');
+                checkButton.disabled = true;
+                checkButton.addEventListener('click', () => checkAnswer(questionElement));
+                questionElement.appendChild(checkButton);
+
+                mcqContainer.appendChild(questionElement);
+            });
+        }
+
+        function handleOptionSelect(questionElement, selectedLabel) {
+            if (questionElement.classList.contains('answered')) {
+                return;
+            }
+
+            const options = questionElement.querySelectorAll('.mcq-option');
+            options.forEach(opt => opt.classList.remove('selected'));
+            selectedLabel.classList.add('selected');
+
+            const selectedInput = selectedLabel.querySelector('input[type="radio"]');
+             if (selectedInput) {
+                 selectedInput.checked = true;
+             }
+
+            const checkButton = questionElement.querySelector('.check-button');
+            if (checkButton) {
+               checkButton.disabled = false;
+            }
+        }
+
+        function checkAnswer(questionElement) {
+            if (questionElement.classList.contains('answered')) {
+                return;
+            }
+
+            const questionIndex = parseInt(questionElement.dataset.questionIndex);
+            const selectedInput = questionElement.querySelector('input[type="radio"]:checked');
+            const explanationContainer = questionElement.querySelector('.explanation');
+            const options = questionElement.querySelectorAll('.mcq-option');
+            const checkButton = questionElement.querySelector('.check-button');
+
+            if (!selectedInput) {
+                return;
+            }
+
+            const selectedIndex = parseInt(selectedInput.value);
+            const correctIndex = mcqData[questionIndex].correctAnswerIndex;
+             const questionTopic = mcqData[questionIndex].topic;
+
+            questionElement.classList.add('answered');
+             options.forEach(opt => {
+                 opt.style.pointerEvents = 'none';
+                 opt.classList.remove('selected');
+             });
+            if (checkButton) {
+               checkButton.disabled = true;
+               checkButton.textContent = 'Answered';
+            }
+
+            options.forEach((optLabel, index) => {
+                if (index === correctIndex) {
+                    optLabel.classList.add('correct');
+                } else if (index === selectedIndex && selectedIndex !== correctIndex) {
+                    optLabel.classList.add('incorrect');
+                }
+            });
+
+             if (explanationContainer) {
+                explanationContainer.classList.remove('hidden');
+             }
+
+            questionsAnswered++;
+            if (selectedIndex === correctIndex) {
+                score++;
+            } else {
+                if (questionTopic) {
+                    incorrectTopics.add(questionTopic);
+                }
+            }
+
+            updateScoreDisplay();
+            updateFeedbackDisplay();
+
+            // Optional: If all questions answered, trigger final feedback state
+            if (questionsAnswered === mcqData.length) {
+                // Could add a "Review My Weak Points" button here or just rely on the list
+            }
+        }
+
+        function updateScoreDisplay() {
+             if (mcqResults) {
+                mcqResults.textContent = `Score: ${score} / ${questionsAnswered} Answered`;
+             }
+        }
+
+        function updateFeedbackDisplay() {
+            if (incorrectTopics.size > 0 && mcqFeedback && feedbackTopicsList) {
+                feedbackTopicsList.innerHTML = '';
+                incorrectTopics.forEach(topic => {
+                    const listItem = document.createElement('li');
+                    const topicLink = document.createElement('a');
+                    const navItem = Array.from(navLinks).find(link => link.textContent.trim() === topic);
+
+                    if (navItem) {
+                         topicLink.href = navItem.getAttribute('href');
+                         topicLink.textContent = topic;
+                         topicLink.classList.add('underline');
+                          topicLink.addEventListener('click', (event) => {
+                             event.preventDefault();
+                             const targetId = topicLink.getAttribute('href').substring(1);
+                             showSection(targetId);
+                         });
+                         listItem.appendChild(topicLink);
+                    } else {
+                         listItem.textContent = topic;
+                    }
+
+                    feedbackTopicsList.appendChild(listItem);
+                });
+                mcqFeedback.classList.remove('hidden');
+            } else if (mcqFeedback) {
+                mcqFeedback.classList.add('hidden');
+            }
+        }
+
+
+        // --- Interactive Algorithm Logic ---
+
+        const algorithms = {
+            stem: {
+                start: {
+                    text: "Suspected STEMI Patient Arrives",
+                    type: "start",
+                    next: ["immediateEvaluation"]
+                },
+                immediateEvaluation: {
+                    text: "Immediate Assessment (&lt;10 min): ABCs, Vitals, ECG, Markers, Labs, IV Access, Portable CXR. Give ASA, Initiate other initial meds/support.",
+                    type: "step",
+                     next: ["ecgResult"]
+                },
+                 ecgResult: {
+                     text: "ECG Interpretation: STEMI criteria met?",
+                     type: "decision",
+                     options: [
+                         { text: "YES (ST &uarr; / New LBBB)", next: "reperfusionDecision" },
+                         { text: "NO (NSTEMI/UA or Mimic)", next: "transferToNSTEMI" }
+                     ]
+                 },
+                 reperfusionDecision: {
+                     text: "Reperfusion Strategy Decision",
+                     type: "step", // Display this step before the next decision
+                     next: ["pciAvailable"]
+                 },
+                 pciAvailable: {
+                     text: "PCI capable hospital & timely PCI (&le;90 min Door-to-Device) possible?",
+                     type: "decision",
+                     options: [
+                         { text: "YES", next: "primaryPci" },
+                         { text: "NO (PCI delay > 120 min)", next: "fibrinolysisCandidate" } // Changed text slightly
+                     ]
+                 },
+                 primaryPci: {
+                     text: "Proceed with Primary PCI (Goal &le;90 min D2D or &le;120 min if transfer)",
+                     type: "end",
+                     endText: "Algorithm concludes here. Proceed to Post-PCI Care & Secondary Prevention."
+                 },
+                 fibrinolysisCandidate: {
+                     text: "Fibrinolysis Candidate? (Symptom onset &lt;12h, no C/I)",
+                     type: "decision",
+                     options: [
+                          { text: "YES", next: "administerFibrinolysis" },
+                          { text: "NO (Late presentation / C/I)", next: "transferForPCI" }
+                     ]
+                 },
+                 administerFibrinolysis: {
+                     text: "Administer Fibrinolysis (Goal &le;30 min Door-to-Needle) + Anticoagulation + DAPT. Monitor closely.",
+                     type: "step",
+                     next: ["assessReperfusion"]
+                 },
+                 assessReperfusion: {
+                     text: "Assess for Reperfusion (Symptom relief, ST resolution)",
+                     type: "step", // Display this step
+                     next: ["postFibrinolysisStrategy"]
+                 },
+                  postFibrinolysisStrategy: {
+                     text: "Post-Fibrinolysis Strategy", // Added a header node for clarity
+                     type: "step",
+                     next: ["transferForPCI"] // All fib patients should get angio within 3-24h
+                 },
+                  transferForPCI: {
+                     text: "Transfer to PCI capable hospital for Angiography / Possible Rescue PCI",
+                     type: "end",
+                      endText: "Algorithm concludes here. Angiography &plusmn; PCI (&le;3-24h post-fib or as needed)."
+                 },
+                  transferToNSTEMI: {
+                     text: "Evaluate further based on diagnosis (See NSTEMI/UA algorithm or manage mimic)",
+                     type: "end",
+                     endText: "Algorithm concludes here. Follow NSTEMI/UA pathway if appropriate, or manage alternative diagnosis."
+                 }
+            },
+            nstem: {
+                 start: {
+                    text: "Suspected NSTEMI / UA Patient Arrives",
+                    type: "start",
+                    next: ["initialEvaluationNSTEMI"]
+                },
+                initialEvaluationNSTEMI: {
+                    text: "Immediate Assessment (&lt;10 min): ABCs, Vitals, ECG, Markers, Labs, IV Access, Portable CXR. Initiate ASA, Anticoagulant, P2Y12 inhibitor, Statin, NTG (if needed).",
+                    type: "step",
+                     next: ["diagnosisConfirmation"]
+                },
+                diagnosisConfirmation: {
+                    text: "Diagnosis confirmed: NSTEMI (elevated troponin) or UA (negative troponin)?",
+                    type: "decision",
+                    options: [
+                        { text: "NSTEMI (Troponin+)", next: "riskStratification" },
+                        { text: "UA (Troponin-)", next: "riskStratification" }, // Both proceed to risk strat for decision
+                         { text: "Not ACS / Ruled Out", next: "alternativeDiagnosisNSTEMI" } // Different end node ID
+                    ]
+                },
+                 riskStratification: {
+                     text: "Risk Stratification (TIMI / GRACE score, clinical features)",
+                     type: "step",
+                     next: ["riskLevel"]
+                 },
+                 riskLevel: {
+                     text: "Patient is...",
+                     type: "decision",
+                     options: [
+                         { text: "High/Intermediate Risk", next: "earlyInvasive" },
+                         { text: "Low Risk", next: "ischemiaGuided" }
+                     ]
+                 },
+                 earlyInvasive: {
+                     text: "Early Invasive Strategy (Angiography &plusmn; PCI within 24-72 hours)",
+                     type: "end",
+                     endText: "Algorithm concludes here. Proceed with Cardiac Catheterization."
+                 },
+                 ischemiaGuided: {
+                     text: "Ischemia-Guided Strategy (Conservative medical management)",
+                     type: "step",
+                     next: ["assessIschemia"]
+                 },
+                 assessIschemia: {
+                     text: "Assess for recurrent symptoms / ischemia or perform stress test",
+                     type: "decision",
+                     options: [
+                         { text: "Ischemia/Symptoms present", next: "invasiveAfterConservative" },
+                         { text: "No Ischemia/Symptoms (Negative Stress)", next: "dischargeWithOMT" }
+                     ]
+                 },
+                  invasiveAfterConservative: {
+                     text: "Proceed to Angiography &plusmn; PCI",
+                     type: "end",
+                     endText: "Algorithm concludes here. Initiate invasive strategy."
+                  },
+                 dischargeWithOMT: {
+                     text: "Discharge on Optimal Medical Therapy (OMT) & Secondary Prevention",
+                     type: "end",
+                     endText: "Algorithm concludes here. Patient discharged with follow-up."
+                 },
+                 alternativeDiagnosisNSTEMI: { // Different end node ID
+                     text: "Manage Alternative Diagnosis",
+                     type: "end",
+                     endText: "Algorithm concludes here. ACS ruled out. Follow management for confirmed condition."
+                 }
+            }
+        };
+
+
+        const algorithmState = {
+            stem: { currentNodes: ['start'], history: [] },
+            nstem: { currentNodes: ['start'], history: [] }
+        };
+
+
+        function renderAlgorithm(algorithmId) {
+            const container = $(`#${algorithmId}-algorithm`);
+            if (!container) return;
+
+            container.innerHTML = ''; // Clear container
+            const currentState = algorithmState[algorithmId];
+            const currentNodes = currentState.currentNodes;
+            const algoDefinition = algorithms[algorithmId];
+
+            // Render each current node
+            currentNodes.forEach(nodeId => {
+                const node = algoDefinition[nodeId];
+                if (!node) {
+                     console.error(`Algorithm node "${nodeId}" not found in ${algorithmId} definition.`);
+                     return; // Skip if node ID is invalid
+                }
+
+                const nodeElement = document.createElement('div');
+                nodeElement.classList.add('algo-node');
+
+                // Add specific class based on type
+                if (node.type === 'decision') {
+                    nodeElement.classList.add('algo-decision');
+                } else if (node.type === 'end') {
+                     nodeElement.classList.add('algo-end');
+                }
+                // Start and Step types don't need specific classes for now
+
+                const textElement = document.createElement('p');
+                textElement.innerHTML = node.text; // Use innerHTML to allow &amp;, &plusmn; etc.
+                nodeElement.appendChild(textElement);
+
+                // Add click listener for Step/Start nodes to advance
+                 if (node.type === 'start' || node.type === 'step') {
+                     if (node.next && node.next.length > 0) {
+                         nodeElement.classList.add('cursor-pointer');
+                         nodeElement.dataset.nextNodeId = node.next[0]; // Assume first in 'next' array for step
+                         nodeElement.dataset.currentNodeId = nodeId;
+                         nodeElement.dataset.algorithmId = algorithmId;
+                         nodeElement.addEventListener('click', handleAlgorithmClick);
+                     }
+                 }
+
+
+                // If it's a decision node, add options below it
+                if (node.type === 'decision' && node.options) {
+                     // Remove the click listener from the decision node itself if it was added as a step
+                     nodeElement.classList.remove('cursor-pointer');
+                     nodeElement.removeEventListener('click', handleAlgorithmClick); // Ensure old listener is removed if type changes dynamically
+
+                    const optionsDiv = document.createElement('div');
+                    optionsDiv.classList.add('algo-options');
+                    node.options.forEach(option => {
+                        const optionLink = document.createElement('a');
+                         optionLink.href = '#';
+                        optionLink.classList.add('algo-option-link');
+                        optionLink.textContent = option.text;
+                         optionLink.dataset.nextNodeId = option.next;
+                         optionLink.dataset.currentNodeId = nodeId;
+                         optionLink.dataset.algorithmId = algorithmId;
+
+                        optionLink.addEventListener('click', handleAlgorithmClick);
+                        optionsDiv.appendChild(optionLink);
+                    });
+                    container.appendChild(optionsDiv); // Append options *after* the decision node
+                } else if (node.type === 'end' && node.endText) {
+                     // Add end text below the node text
+                     const endTextElement = document.createElement('p');
+                      endTextElement.classList.add('mt-2', 'font-normal', 'italic', 'text-sm');
+                     endTextElement.innerHTML = node.endText;
+                     nodeElement.appendChild(endTextElement);
+                }
+
+
+                container.appendChild(nodeElement); // Append node itself
+            });
+
+             // Show/hide reset button
+             const resetButton = $(`.algo-option-link.reset[data-algorithm="${algorithmId}"]`);
+             if (resetButton) {
+                if (algorithmState[algorithmId].history.length > 0) {
+                     resetButton.classList.remove('hidden');
+                 } else {
+                     resetButton.classList.add('hidden');
+                 }
+             }
+        }
+
+         function handleAlgorithmClick(event) {
+             event.preventDefault();
+
+             const clickedElement = event.target.closest('.algo-node, .algo-option-link');
+             if (!clickedElement) return;
+
+             const nextNodeId = clickedElement.dataset.nextNodeId;
+             const currentNodeId = clickedElement.dataset.currentNodeId;
+             const algorithmId = clickedElement.dataset.algorithmId;
+
+             if (!nextNodeId || !algorithmId) return; // currentNodeId might be null for start node, but algorithmId/nextNodeId are essential
+
+             const currentState = algorithmState[algorithmId];
+             const algoDefinition = algorithms[algorithmId];
+
+             // Find the definition of the current node for history (if clicked directly)
+             const sourceNodeIdForHistory = clickedElement.classList.contains('algo-node') ? clickedElement.dataset.currentNodeId : clickedElement.dataset.currentNodeId;
+
+
+              // Store the path taken for history
+              currentState.history.push({
+                  fromNode: sourceNodeIdForHistory,
+                  toNode: nextNodeId,
+                  optionText: clickedElement.classList.contains('algo-option-link') ? clickedElement.textContent : null
+              });
+
+             // Determine the new set of current nodes
+             const nextNodes = Array.isArray(nextNodeId) ? nextNodeId : [nextNodeId];
+
+             // Set the state to the new nodes
+             currentState.currentNodes = nextNodes.filter(id => algoDefinition[id]); // Filter out invalid IDs
+
+             // Re-render the algorithm section
+             renderAlgorithm(algorithmId);
+         }
+
+         // Add listeners to reset buttons (already present, just ensuring it's here)
+         $$('.algo-option-link.reset').forEach(button => {
+             button.addEventListener('click', (event) => {
+                 event.preventDefault();
+                 const algorithmId = button.dataset.algorithm;
+                 if (algorithmState[algorithmId]) {
+                     algorithmState[algorithmId].currentNodes = ['start']; // Reset to start
+                     algorithmState[algorithmId].history = []; // Clear history
+                     renderAlgorithm(algorithmId); // Re-render
+                 }
+             });
+         });
+
+
+        // --- Initial Render Triggers ---
+
+        // Use a single MutationObserver for the main content area
+        const mainContent = $('main');
+        const mainObserver = new MutationObserver((mutationsList) => {
+            for(let mutation of mutationsList) {
+                 // Check for changes to direct children of main (which are the sections)
+                 if (mutation.type === 'childList') {
+                     // Find the newly active section
+                     const activeSection = Array.from(contentSections).find(section => section.classList.contains('active'));
+
+                     if (activeSection) {
+                         const targetId = activeSection.id;
+
+                          // Trigger MCQ rendering if it's the MCQ section and not already rendered
+                          if (targetId === 'mcq' && mcqContainer.children.length === 0) {
+                              renderMCQs();
+                          }
+                          // Trigger Algorithm rendering if it's the Algorithms section
+                          if (targetId === 'algorithms') {
+                               renderAlgorithm('stem');
+                               renderAlgorithm('nstem');
+                          }
+                     }
+                 }
+                 // Could also observe attribute changes on sections directly if preferred
+            }
+        });
+        // Observe changes to the child list of the main element
+        mainObserver.observe(mainContent, { childList: true }); // childList monitors addition/removal of direct children
+         // We might also need to observe attribute changes on the sections themselves if the 'active' class toggle doesn't change the child list
+         contentSections.forEach(section => {
+             mainObserver.observe(section, { attributes: true, attributeFilter: ['class'] });
+         });
+
+
+         // Manually trigger rendering for the initially active section on page load
+         const initiallyActiveSection = Array.from(contentSections).find(section => section.classList.contains('active'));
+         if (initiallyActiveSection) {
+             const initialTargetId = initiallyActiveSection.id;
+              if (initialTargetId === 'mcq' && mcqContainer.children.length === 0) {
+                  renderMCQs();
+              }
+              if (initialTargetId === 'algorithms') {
+                  renderAlgorithm('stem');
+                  renderAlgorithm('nstem');
+              }
+         }
+
+
+    </script>
+
+</body>
+</html>
