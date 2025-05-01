@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Advanced Arrhythmia Module for PGY-1</title>
   <style>
-    /* Base styles and transitions */
+    /* Global styles and transitions */
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -16,33 +16,69 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 20px;
-      border-bottom: 1px solid #ccc;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #ccc;
+      margin-bottom: 20px;
     }
-    nav a {
-      margin-right: 15px;
+    /* Top Navigation */
+    #navbar {
+      margin-bottom: 20px;
+      background: #f0f0f0;
+      padding: 10px 15px;
+      border-radius: 5px;
+      display: flex;
+      gap: 15px;
+    }
+    #navbar a {
       text-decoration: none;
       font-weight: bold;
-      cursor: pointer;
+      padding: 8px 12px;
+      border-radius: 4px;
+      color: inherit;
+      transition: background 0.2s;
     }
+    #navbar a:hover,
+    #navbar a.active {
+      background: #2a5d84;
+      color: #fff;
+    }
+    /* Section styles */
     .section {
       display: none;
-      margin-top: 20px;
     }
-    .active {
+    .section.active {
       display: block;
     }
-    .diagram, .algo-diagram {
+    /* Sub-tab navigation for arrhythmia types */
+    .subnav {
+      margin: 15px 0;
+      display: flex;
+      gap: 10px;
+      border-bottom: 2px solid #ddd;
+      padding-bottom: 5px;
+    }
+    .subnav a {
+      text-decoration: none;
+      font-weight: bold;
+      padding: 6px 10px;
+      border-radius: 4px;
+      color: inherit;
+      transition: background 0.2s;
+    }
+    .subnav a:hover,
+    .subnav a.active {
+      background: #2a5d84;
+      color: #fff;
+    }
+    /* Boxes for placeholder diagrams */
+    .diagram, .algo-diagram, .placeholder {
       border: 1px solid #ccc;
       padding: 10px;
       margin: 10px 0;
       text-align: center;
+      border-radius: 4px;
     }
-    button {
-      padding: 6px 10px;
-      margin: 5px;
-      cursor: pointer;
-    }
+    /* Styling interactive elements */
     .mcq, .algo-branch, .chadsvasc-box {
       margin-bottom: 20px;
       padding: 15px;
@@ -50,27 +86,41 @@
       border-radius: 4px;
       background: #f9f9f9;
     }
-    /* Light and Dark Theme */
-    .light-theme {
-      background-color: #fff;
-      color: #000;
+    button {
+      padding: 6px 10px;
+      margin: 5px;
+      cursor: pointer;
+      border: none;
+      border-radius: 4px;
+      background: #2a5d84;
+      color: #fff;
+      transition: background 0.2s;
     }
-    .light-theme a {
-      color: #0066cc;
+    button:hover {
+      background: #1d3e65;
     }
+    input[type="number"] {
+      width: 60px;
+    }
+    /* Dark theme styles */
     .dark-theme {
       background-color: #222;
       color: #f0f0f0;
     }
-    .dark-theme a {
-      color: #99ccff;
+    .dark-theme #navbar {
+      background: #333;
     }
-    /* Navigation bar */
-    #navbar {
-      margin-bottom: 20px;
+    .dark-theme #navbar a {
+      color: #f0f0f0;
     }
-    input[type="number"] {
-      width: 60px;
+    .dark-theme .mcq,
+    .dark-theme .algo-branch,
+    .dark-theme .chadsvasc-box {
+      background: #333;
+      border: 1px solid #444;
+    }
+    .dark-theme .subnav {
+      border-bottom: 2px solid #555;
     }
   </style>
 </head>
@@ -78,12 +128,12 @@
   <!-- Header with Navigation and Theme Toggle -->
   <header>
     <h1>Advanced Arrhythmia Module for PGY-1</h1>
-    <div>
-      <button id="themeToggle">Toggle Dark/Light Theme</button>
-    </div>
+    <button id="themeToggle">Toggle Dark/Light Theme</button>
   </header>
+  
+  <!-- Top Navigation Tabs -->
   <nav id="navbar">
-    <a data-target="handoutSection">Handout</a>
+    <a data-target="handoutSection" class="active">Handout</a>
     <a data-target="ecgSection">ECG Examples</a>
     <a data-target="mcqSection">Interactive MCQs</a>
     <a data-target="algoSection">Interactive Algorithm</a>
@@ -91,108 +141,87 @@
     <a data-target="refSection">References</a>
   </nav>
 
-  <!-- SECTION: Handout (Advanced Details) -->
+  <!-- SECTION: Handout with Sub-Tabs for Arrhythmia Types -->
   <section id="handoutSection" class="section active">
     <h2>Advanced Arrhythmia Handout</h2>
     <p>
-      Arrhythmia describes any deviation from normal cardiac rhythm or rate. In this module, we review advanced details pertinent to clinical decision‐making:
+      Arrhythmia describes any deviation from normal cardiac rhythm or rate. In this module, we review advanced clinical details, including pathophysiology, evaluation, and management.
     </p>
     <h3>Normal Cardiac Conduction</h3>
     <p>
-      The electrical conduction system comprises the <strong>Sinoatrial (SA) Node</strong> – the natural pacemaker; the <strong>Atrioventricular (AV) Node</strong> – which delays impulses to allow complete atrial contraction; and the <strong>His-Purkinje network</strong>, ensuring rapid impulse transmission through the ventricles. Knowledge of these pathways is critical when evaluating conduction disturbances.
+      The conduction system encompasses the <strong>Sinoatrial (SA) Node</strong> – the natural pacemaker; the <strong>Atrioventricular (AV) Node</strong> – which delays impulses for coordinated atrial and ventricular contraction; and the <strong>His-Purkinje network</strong>, ensuring rapid ventricular conduction.
     </p>
     <div class="diagram">
-      <svg width="300" height="150">
-        <circle cx="50" cy="75" r="20" fill="#2a5d84" />
-        <text x="50" y="80" font-size="12" text-anchor="middle" fill="#fff">SA Node</text>
-        <line x1="70" y1="75" x2="130" y2="75" stroke="#000" stroke-width="2"/>
-        <circle cx="150" cy="75" r="20" fill="#2a5d84" />
-        <text x="150" y="80" font-size="12" text-anchor="middle" fill="#fff">AV Node</text>
-        <line x1="170" y1="75" x2="250" y2="75" stroke="#000" stroke-width="2"/>
-        <text x="250" y="80" font-size="12" text-anchor="middle" fill="#2a5d84">His-Purkinje</text>
-      </svg>
-      <p>Figure: Normal Cardiac Conduction Network</p>
+      <p>Diagram: Normal Cardiac Conduction (SVG placeholder)</p>
     </div>
-
-    <h3>Bradyarrhythmias</h3>
-    <p>
-      <strong>Sinus Bradycardia:</strong> Although a slow rate (<60 bpm) may be normal in athletes, pathologic sinus bradycardia signifies intrinsic sinus node dysfunction (e.g., sick sinus syndrome) or secondary effects of medications (e.g., beta blockers, digoxin). Advanced evaluation includes assessing autonomic tone, ischemia, or infiltrative disease. Management involves stopping culpable medications, and in symptomatic cases, temporary or permanent pacing can be indicated.
-    </p>
-    <p>
-      <strong>Heart Blocks:</strong>
-      <br>• <em>First-Degree AV Block:</em> Reveals a prolonged PR interval (>200 ms) but is typically benign; however, it may herald progressive conduction system disease.
-      <br>• <em>Second-Degree AV Block:</em> Distinguish <strong>Mobitz I (Wenckebach)</strong>—characterized by gradual PR lengthening ending in a dropped beat (usually vagally mediated)—from <strong>Mobitz II</strong>, where sudden non-conduction without preceding PR changes implies a high risk of progression to complete block.
-      <br>• <em>Third-Degree AV Block:</em> Signals complete AV dissociation. Evaluation with echocardiography and electrophysiology studies may be required; treatment with pacemaker implantation is usually necessary.
-    </p>
     
-    <h3>Tachyarrhythmias</h3>
-    <p>
-      <strong>Supraventricular Tachycardia (SVT):</strong> This category includes AV nodal reentrant tachycardia (AVNRT), atrioventricular reentrant tachycardia (AVRT), and atrial tachycardia. Advanced ECM and invasive EP studies can delineate the reentrant circuits; first‐line treatment may involve vagal maneuvers then adenosine for acute termination.
-    </p>
-    <p>
-      <strong>Atrial Fibrillation (AFib):</strong> AFib is the most common sustained arrhythmia and involves complex triggers such as focal firing (often from the pulmonary veins), structural remodeling, fibrosis, and inflammation. The subtypes include:
-      <ul>
-        <li><strong>Paroxysmal:</strong> Self-terminating within 7 days.</li>
-        <li><strong>Persistent:</strong> Lasts >7 days or requires pharmacologic/electrical intervention.</li>
-        <li><strong>Permanent:</strong> Longstanding where rate/rhythm control are accepted.</li>
-        <li><strong>AFib with Rapid Ventricular Response (RVR):</strong> May cause hemodynamic compromise.</li>
-        <li><strong>AFib with Controlled Rate:</strong> Ventricular rate is regulated with drugs.</li>
-      </ul>
-      <br>
-      Decisions regarding rate or rhythm control depend on symptom burden and the potential for structural remodeling. For comprehensive stroke prevention, the <a href="#chadsvascSection">CHADSVASC Calculator</a> is an essential tool.
-    </p>
-    <p>
-      <strong>Atrial Flutter:</strong> Is characterized by a regular “saw-tooth” pattern on ECG due to macroreentrant circuits in the right atrium. Its management can include rate control, cardioversion, and ablation.
-    </p>
-    <p>
-      <strong>Ventricular Tachycardia (VT) & Ventricular Fibrillation (VF):</strong> VT often results from reentrant circuits within scarred myocardium (post‐MI, cardiomyopathy) and can degenerate into VF—a chaotic arrhythmia requiring immediate defibrillation. Advanced management may include antiarrhythmic drugs (e.g., amiodarone, lidocaine), ICD placement, and in selected cases, catheter ablation.
-    </p>
+    <!-- Sub-tabs for Arrhythmia Categories -->
+    <div class="subnav">
+      <a data-target="bradyTab" class="active">Bradyarrhythmias</a>
+      <a data-target="tachyTab">Tachyarrhythmias</a>
+    </div>
+    
+    <!-- Sub-Tab Content: Bradyarrhythmias -->
+    <div id="bradyTab" class="subtab active">
+      <h3>Bradyarrhythmias</h3>
+      <h4>Sinus Bradycardia</h4>
+      <p>
+        Sinus bradycardia is defined by a heart rate less than 60 bpm with normal P‑wave morphology. Beyond a physiologic finding in athletes, advanced evaluation might reveal sick sinus syndrome or drug effects. Treatment is indicated for symptomatic patients and may involve cessation of negative chronotropes or pacing.
+      </p>
+      <h4>Heart Blocks</h4>
+      <p>
+        <strong>First-Degree AV Block:</strong> Prolonged PR interval (>200 ms) with all impulses conducted. Often benign but may be a harbinger of further conduction system disease.
+      </p>
+      <p>
+        <strong>Second-Degree AV Block:</strong> 
+        <br>• <em>Mobitz I (Wenckebach):</em> Progressive PR prolongation leading to a dropped beat (commonly vagal-mediated).
+        <br>• <em>Mobitz II:</em> Fixed PR intervals with intermittent non-conducted P waves, indicating a significant conduction disorder which may progress to complete block.
+      </p>
+      <p>
+        <strong>Third-Degree AV Block:</strong> Complete AV dissociation—an emergent condition usually requiring permanent pacemaker implantation.
+      </p>
+    </div>
+    
+    <!-- Sub-Tab Content: Tachyarrhythmias -->
+    <div id="tachyTab" class="subtab" style="display:none;">
+      <h3>Tachyarrhythmias</h3>
+      <h4>Supraventricular Tachycardia (SVT)</h4>
+      <p>
+        SVT (including AVNRT and AVRT) is characterized by a rapid, usually narrow QRS complex tachycardia. Advanced electrophysiology (EP) studies often delineate reentrant circuits. First-line management includes vagal maneuvers and adenosine.
+      </p>
+      <h4>Atrial Fibrillation (AFib)</h4>
+      <p>
+        AFib is recognized by an irregularly irregular rhythm and the absence of distinct P waves. Its pathophysiology implicates focal triggers, structural remodeling, and fibrosis. Subtypes include paroxysmal, persistent, and permanent AFib (including those with rapid ventricular response or controlled rate). For stroke prevention, use the <a data-target="chadsvascSection" style="text-decoration: underline; cursor: pointer;">CHADSVASC Calculator</a>.
+      </p>
+      <h4>Atrial Flutter</h4>
+      <p>
+        Atrial flutter manifests as a “saw-tooth” pattern secondary to large macroreentrant circuits within the atria. Fixed conduction ratios (commonly 2:1) may yield a regular ventricular rhythm. Management may involve rate control, electrical cardioversion, or catheter ablation.
+      </p>
+      <h4>Ventricular Tachycardia (VT) & Ventricular Fibrillation (VF)</h4>
+      <p>
+        VT is characterized by wide QRS complexes (>120 ms) and frequently arises in the setting of scarred myocardium (post–MI, cardiomyopathy). VT may degenerate into VF—an immediately life-threatening state requiring emergent defibrillation. Advanced management may necessitate antiarrhythmic therapy, ICD implantation, or catheter ablation.
+      </p>
+    </div>
   </section>
 
-  <!-- SECTION: ECG Examples -->
+  <!-- SECTION: ECG Examples (Without Stock Images) -->
   <section id="ecgSection" class="section">
     <h2>ECG Examples</h2>
-    
-    <h3>Sinus Bradycardia</h3>
     <p>
-      A characteristic regular rhythm with visible P waves preceding each QRS complex at a rate below 60 bpm.
+      In a clinical module, you’d review actual ECG strips. Here, textual placeholders indicate what you would expect:
     </p>
-    <!-- Actual ECG image for Sinus Bradycardia -->
-    <div class="diagram">
-      <img src="https://www.researchgate.net/profile/Andrew-McNulty-2/publication/231215604/figure/fig2/AS:340083601361920@1451465891143/Representative-ECGs-of-various-arrhythmias-A-sinus-bradycardia-at-a-heart-rate-of-51.jpg" alt="Sinus Bradycardia ECG" width="300">
-      <p>ECG: Sinus Bradycardia</p>
+    <div class="placeholder">
+      <p><strong>Sinus Bradycardia:</strong> Regular rhythm, clear P waves, rate below 60 bpm.</p>
     </div>
-    
-    <h3>Atrial Fibrillation (AFib)</h3>
-    <p>
-      AFib is diagnosed when there is an irregularly irregular rhythm with no distinct P waves. Noticeable electrical and structural remodeling is common in persistent forms.
-    </p>
-    <!-- Actual ECG image for Atrial Fibrillation -->
-    <div class="diagram">
-      <img src="https://ar.inspiredpencil.com/pictures-2023/atrial-fibrillation-ecg" alt="Atrial Fibrillation ECG" width="300">
-      <p>ECG: Atrial Fibrillation Example</p>
+    <div class="placeholder">
+      <p><strong>Atrial Fibrillation:</strong> Irregular rhythm with absent P waves.</p>
     </div>
-    
-    <h3>Atrial Flutter</h3>
-    <p>
-      Atrial flutter typically displays a saw-tooth pattern, usually with a fixed conduction ratio (often 2:1), resulting in a regular ventricular response.
-    </p>
-    <!-- Placeholder for an actual Atrial Flutter ECG -->
-    <div class="diagram">
-      <img src="https://via.placeholder.com/300x150?text=Atrial+Flutter+ECG" alt="Atrial Flutter ECG" width="300">
-      <p>ECG: Atrial Flutter Example</p>
+    <div class="placeholder">
+      <p><strong>Atrial Flutter:</strong> "Saw-tooth" pattern with regular ventricular response (e.g., 2:1 conduction).</p>
     </div>
-    
-    <h3>Ventricular Tachycardia (VT)/Fibrillation (VF)</h3>
-    <p>
-      VT is identified by wide QRS complexes (>120 ms) and rapid rate. VF exhibits chaotic, disorganized waves and requires immediate defibrillation.
-    </p>
-    <!-- Actual ECG image for VT/VF (example provided) -->
-    <div class="diagram">
-      <img src="https://ar.inspiredpencil.com/pictures-2023/ventricular-fibrillation-vs-ventricular-tachycardia-ecg" alt="Ventricular Tachycardia/VF ECG" width="300">
-      <p>ECG: VT/VF Example</p>
+    <div class="placeholder">
+      <p><strong>VT/VF:</strong> VT shows wide QRS complexes; VF appears chaotic without discernible QRS complexes.</p>
     </div>
-    
   </section>
 
   <!-- SECTION: Interactive MCQs -->
@@ -201,11 +230,11 @@
     <div id="mcqContainer"></div>
   </section>
 
-  <!-- SECTION: Interactive ACLS Algorithm -->
+  <!-- SECTION: Interactive Algorithm -->
   <section id="algoSection" class="section">
     <h2>Interactive ACLS Algorithm</h2>
     <p>
-      Follow the branching algorithm based on your patient’s presentation. Make decisions to see tailored management recommendations.
+      Follow the branching algorithm below based on your patient’s presentation. Make decisions to see tailored management recommendations.
     </p>
     <div id="algoContainer" class="algo-branch">
       <p id="algoText">Step 1: Assess ABCs. Is the patient hemodynamically stable?</p>
@@ -214,10 +243,8 @@
         <button onclick="chooseAlgo('unstable')">No, unstable</button>
       </div>
     </div>
-    <!-- Final complete algorithm image (placeholder) -->
     <div id="fullAlgo" class="algo-diagram" style="display:none;">
-      <img src="https://via.placeholder.com/500x300?text=Complete+ACLS+Algorithm+Flowchart" alt="Complete ACLS Algorithm Flowchart">
-      <p>Complete ACLS Algorithm Flowchart</p>
+      <p>Complete ACLS Algorithm Flowchart (Placeholder)</p>
       <button onclick="restartAlgo()">Restart Algorithm</button>
     </div>
   </section>
@@ -226,7 +253,7 @@
   <section id="chadsvascSection" class="section">
     <h2>Interactive CHADSVASC Calculator</h2>
     <p>
-      Use this calculator to determine stroke risk in AFib. Input key patient parameters below and click “Calculate Score.” An explanation of each component will follow.
+      Use this calculator to determine stroke risk in AFib. Input key patient parameters below and click “Calculate Score.”
     </p>
     <div class="chadsvasc-box">
       <form id="chadsvascForm">
@@ -301,27 +328,41 @@
       <li><a href="https://www.mksap.com/" target="_blank">MKSAP Review for Internal Medicine</a> — Educational material reference</li>
     </ul>
   </section>
-
-  <!-- JavaScript for Navigation, Theme Toggle, MCQs, Algorithm and CHADSVASC Calculator -->
+  
+  <!-- JavaScript for Navigation, Theme Toggle, MCQs, Algorithm, and CHADSVASC Calculator -->
   <script>
-    // Navigation: Simple SPA section toggling
+    /* Top-Level Navigation */
     const navLinks = document.querySelectorAll("#navbar a");
     const sections = document.querySelectorAll(".section");
     navLinks.forEach(link => {
       link.addEventListener("click", function() {
+        navLinks.forEach(n => n.classList.remove("active"));
+        this.classList.add("active");
         sections.forEach(sec => sec.classList.remove("active"));
         document.getElementById(this.getAttribute("data-target")).classList.add("active");
       });
     });
-
-    // Theme Toggle
+    
+    /* Theme Toggle */
     const themeToggle = document.getElementById('themeToggle');
     themeToggle.addEventListener('click', () => {
       document.body.classList.toggle('dark-theme');
       document.body.classList.toggle('light-theme');
     });
-
-    // Interactive MCQs
+    
+    /* Sub-Tab Navigation for Handout */
+    const subTabs = document.querySelectorAll(".subnav a");
+    const subTabContents = document.querySelectorAll(".subtab");
+    subTabs.forEach(tab => {
+      tab.addEventListener("click", function() {
+        subTabs.forEach(t => t.classList.remove("active"));
+        this.classList.add("active");
+        subTabContents.forEach(content => content.style.display = "none");
+        document.getElementById(this.getAttribute("data-target")).style.display = "block";
+      });
+    });
+    
+    /* Interactive MCQs */
     const mcqData = [
       {
         question: "Which feature is most indicative of advanced sinus node dysfunction?",
@@ -332,20 +373,19 @@
           "Regular rhythm with a slightly prolonged PR interval"
         ],
         answer: 1,
-        explanation: "Advanced sinus node dysfunction often presents with marked bradycardia, an inability to appropriately increase the rate during activity (chronotropic incompetence), and associated symptoms."
+        explanation: "Advanced sinus node dysfunction typically presents with marked bradycardia, an impaired ability to increase the heart rate during exercise (chronotropic incompetence), and associated symptoms."
       },
       {
         question: "In Mobitz II second-degree AV block, which finding is most concerning?",
         options: [
           "Progressive PR prolongation before a dropped beat",
-          "Fixed PR intervals with occasional non-conducted P waves, indicating conduction system disease",
+          "Fixed PR intervals with intermittent non-conducted P waves, indicating significant conduction system disease",
           "A normal PR interval with isolated dropped beats",
           "Short PR interval suggestive of pre-excitation syndrome"
         ],
         answer: 1,
-        explanation: "Mobitz II is worrisome because it features fixed PR intervals with sudden dropped beats, indicating significant conduction system pathology that can progress to complete heart block."
+        explanation: "Mobitz II block is concerning because the fixed PR intervals with sudden dropped beats indicate an advanced conduction defect that may progress to third-degree block."
       }
-      // Additional advanced MCQs can be appended here.
     ];
     
     const mcqContainer = document.getElementById('mcqContainer');
@@ -398,55 +438,74 @@
         }
       });
       div.appendChild(checkBtn);
-      
       mcqContainer.appendChild(div);
     });
     
-    // Interactive Algorithm logic (branching)
-    let algoState = "start";
-    function chooseAlgo(option) {
-      const algoText = document.getElementById("algoText");
-      const algoOptions = document.getElementById("algoOptions");
-      
-      if (algoState === "start") {
-        if(option === "unstable"){
-          algoText.innerText = "Since the patient is unstable, immediate resuscitative measures are required. For VT/VF, immediate defibrillation is indicated (unsynchronized shock). This branch ends here. Restart to review again.";
-          algoOptions.innerHTML = '<button onclick="restartAlgo()">Restart Algorithm</button>';
-          algoState = "ended";
-        } else {
-          algoText.innerText = "Patient is stable. Is the arrhythmia AFib?";
-          algoOptions.innerHTML = '<button onclick="chooseAlgo(\'isAFib\')">Yes, AFib</button> <button onclick="chooseAlgo(\'other\')">No, other arrhythmia</button>';
-          algoState = "stable";
-        }
-      } else if (algoState === "stable") {
-        if(option === "isAFib"){
-          algoText.innerText = "For stable AFib, choose between <em>rate control</em> and <em>rhythm control</em> strategies. Note that structural remodeling and stroke risk (evaluate via CHA₂DS₂-VASc) will guide therapy.";
-          algoOptions.innerHTML = '<button onclick="finishAlgo()">Finish</button>';
-          algoState = "afib";
-        } else {
-          algoText.innerText = "For other stable arrhythmias (e.g., SVT), initial management includes vagal maneuvers. If ineffective, proceed with adenosine or consider advanced diagnostics.";
-          algoOptions.innerHTML = '<button onclick="finishAlgo()">Finish</button>';
-          algoState = "nonAfib";
-        }
+    /* Interactive ACLS Algorithm */
+    /* New Interactive ACLS Algorithm Code */
+let algoState = "start";
+function chooseAlgo(option) {
+  const algoText = document.getElementById("algoText");
+  const algoOptions = document.getElementById("algoOptions");
+  
+  switch(algoState) {
+    case "start":
+      if (option === "unstable") {
+        algoText.innerText = "Patient is unstable – immediate resuscitation is imperative. For VT/VF, administer immediate defibrillation (unsynchronized shock). This branch ends here.";
+        algoOptions.innerHTML = '<button onclick="restartAlgo()">Restart Algorithm</button>';
+        algoState = "ended";
+      } else if (option === "stable") {
+        algoText.innerText = "Patient is stable. Is the arrhythmia atrial fibrillation (AFib)?";
+        algoOptions.innerHTML = '<button onclick="chooseAlgo(\'isAFib\')">Yes, AFib</button> <button onclick="chooseAlgo(\'other\')">No, other arrhythmia</button>';
+        algoState = "stable";
       }
-    }
+      break;
+      
+    case "stable":
+      if (option === "isAFib") {
+        algoText.innerText = "For stable AFib, please choose the management strategy:\n\nDo you prefer Rate Control or Rhythm Control?";
+        algoOptions.innerHTML = '<button onclick="chooseAlgo(\'rateControl\')">Rate Control</button> <button onclick="chooseAlgo(\'rhythmControl\')">Rhythm Control</button>';
+        algoState = "afibDecision";
+      } else if (option === "other") {
+        algoText.innerText = "For other stable tachyarrhythmias (e.g., SVT), initial management includes vagal maneuvers. If they are ineffective, consider adenosine or further evaluation.";
+        algoOptions.innerHTML = '<button onclick="finishAlgo()">Finish</button>';
+        algoState = "nonAfib";
+      }
+      break;
+      
+    case "afibDecision":
+      if (option === "rateControl") {
+        algoText.innerText = "Rate Control: For stable AFib, agents such as beta blockers or calcium channel blockers are generally used to regulate the ventricular rate. Monitor the patient for adequate rate control and adjust medications as needed.";
+        algoOptions.innerHTML = '<button onclick="finishAlgo()">Finish</button>';
+        algoState = "afibRate";
+      } else if (option === "rhythmControl") {
+        algoText.innerText = "Rhythm Control: In selected patients with stable AFib (typically those with significant symptoms or younger candidates), consider antiarrhythmic drugs or electrical cardioversion. Also, assess for underlying structural heart disease.";
+        algoOptions.innerHTML = '<button onclick="finishAlgo()">Finish</button>';
+        algoState = "afibRhythm";
+      }
+      break;
+      
+    default:
+      console.log("Unexpected state reached in algorithm");
+  }
+}
+
+function finishAlgo() {
+  document.getElementById("algoContainer").style.display = "none";
+  document.getElementById("fullAlgo").style.display = "block";
+}
+
+function restartAlgo() {
+  algoState = "start";
+  document.getElementById("algoContainer").style.display = "block";
+  document.getElementById("fullAlgo").style.display = "none";
+  document.getElementById("algoText").innerText = "Step 1: Assess ABCs. Is the patient hemodynamically stable?";
+  document.getElementById("algoOptions").innerHTML = '<button onclick="chooseAlgo(\'stable\')">Yes, stable</button><button onclick="chooseAlgo(\'unstable\')">No, unstable</button>';
+}
+
     
-    function finishAlgo() {
-      document.getElementById("algoContainer").style.display = "none";
-      document.getElementById("fullAlgo").style.display = "block";
-    }
-    
-    function restartAlgo() {
-      algoState = "start";
-      document.getElementById("algoContainer").style.display = "block";
-      document.getElementById("fullAlgo").style.display = "none";
-      document.getElementById("algoText").innerText = "Step 1: Assess ABCs. Is the patient hemodynamically stable?";
-      document.getElementById("algoOptions").innerHTML = '<button onclick="chooseAlgo(\'stable\')">Yes, stable</button><button onclick="chooseAlgo(\'unstable\')">No, unstable</button>';
-    }
-    
-    // CHADSVASC Calculator
+    /* CHADSVASC Calculator */
     function calculateChadsvasc() {
-      // Retrieve values and convert to numbers
       const chf = parseInt(document.getElementById('chf').value);
       const hypertension = parseInt(document.getElementById('hypertension').value);
       const age = parseInt(document.getElementById('age').value);
@@ -457,14 +516,12 @@
       
       let score = chf + hypertension + diabetes + stroke + vascular + sex;
       
-      // Age scoring: Age ≥75 = 2; Age 65-74 = 1; otherwise 0
       if (age >= 75) {
         score += 2;
       } else if (age >= 65) {
         score += 1;
       }
       
-      // Display the score and explanation
       const resultDiv = document.getElementById('chadsvascResult');
       resultDiv.innerText = "Your CHADSVASC score is: " + score;
       
@@ -472,7 +529,7 @@
       if (score === 0) {
         explanation = "Very low risk for stroke – no antithrombotic therapy is needed.";
       } else if ((score === 1 && sex === 0) || (score === 2 && sex === 1)) {
-        explanation = "Low risk – consider patient-specific factors when deciding on anticoagulation.";
+        explanation = "Low risk – patient-specific factors should guide the decision on anticoagulation.";
       } else {
         explanation = "Moderate-to-high risk for stroke – anticoagulation is generally recommended.";
       }
